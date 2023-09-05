@@ -20,9 +20,12 @@ WORKDIR /apps/${APP_NAME}
 ENV PATH="/apps/jupyterlab-desktop/conda/bin:${PATH}"
 
 RUN mamba create -y --override-channels --channel=conda-forge --name=frites_env \
-    mne numpy scipy xarray dask netCDF4 bottleneck \
-    joblib numba matplotlib seaborn networkx && \
-    /apps/jupyterlab-desktop/conda/envs/frites_env/bin/pip install -U frites==${APP_VERSION}
+    # if we do not install those three, kernel is put in default jlab_env instead of frites_env \
+    'pip' 'nb_conda_kernels' 'ipykernel' \
+    # frites dependencies \
+    'mne' 'numpy' 'scipy' 'xarray' 'dask' 'netCDF4' 'bottleneck' \
+    'joblib' 'numba' 'matplotlib' 'seaborn' 'networkx' \
+    && /apps/jupyterlab-desktop/conda/envs/frites_env/bin/pip install -U frites==${APP_VERSION}
 
 ENV APP_SPECIAL="jupyterlab-desktop"
 ENV APP_CMD=""
